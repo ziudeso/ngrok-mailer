@@ -10,14 +10,10 @@ Download or install Git command [git](https://git-scm.com/downloads) to install 
 Clone repository master or download archived master
 
 ```bash
-git clone https://github.com/developerfromjokela/ngrok-mailer.git
+sudo apt-get install wget unzip ssmtp
+git clone https://github.com/ziudeso/ngrok-mailer.git
 ```
-OR
 
-```bash
-wget https://github.com/developerfromjokela/ngrok-mailer/archive/master.zip
-unzip master.zip
-```
 ## Usage
 Run script as root or using sudo
 ```bash
@@ -61,7 +57,7 @@ All parameters and usage:
 ssmtp_authuser="example@gmail.com"
 ssmtp_authpass="passwordforgmail" 
 ``` 
-- Authentication for SMTP Server
+- Authentication for SMTP Server (must enable two factor auth: https://security.google.com/settings/security/apppasswords)
 
 ``` ssmtp_usestarttls="YES"``` 
 - Use STARTTLS for SMTP Communications (NO disables it)
