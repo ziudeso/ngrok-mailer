@@ -50,12 +50,12 @@ fi
 
 if [ "$forwarding_ip" == "" ]
 then
-ngrok $forwarding_connectiontype $forwarding_port &
+ngrok $forwarding_connectiontype -region=eu $forwarding_port &
 if [ "$logging" = true ]; then
     echo "Ngrok Started for Localhost" >> "ngrokmailer.log"
 fi
 else
-$ngrok_path $forwarding_connectiontype $forwarding_ip:$forwarding_port &
+$ngrok_path $forwarding_connectiontype -region=eu $forwarding_ip:$forwarding_port &
  if [ "$logging" = true ]; then
     echo "Ngrok Started for Device with IP: $forwarding_ip" >> "ngrokmailer.log"
  fi
