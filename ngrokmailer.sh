@@ -25,7 +25,6 @@ rm -f ngrokmailer.log
 echo "Starting Ngrok Mailer" >> "ngrokmailer.log"
 fi
 
-fi
 if [ "$logging" = true ]; then
 echo "Checking for ngrok file" >> "ngrokmailer.log"
 fi
