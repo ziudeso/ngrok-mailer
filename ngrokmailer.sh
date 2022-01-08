@@ -3,52 +3,31 @@
 #
 # Remember to setup sSMTP for first time by editing file 'sudo nano /etc/ssmtp/ssmtp.conf' manually, or script does it for you. 
 # Script Depends on: sSMTP, ngrok, unzip and wget
-# Run Script as root (using sudo if not loged in as root), if ssmtp command is not found, and if you enable for dependencies check
 
-forwarding_ip="192.168.100.69" # IP of device, server or whatever, which NGROK will forward, leave blank for localhost
-forwarding_port="80" # Port to forward
-forwarding_connectiontype="http" # Forwarding type http or tcp (See more in ngrok documentation)
+# Install 
+#sudo apt-get install wget unzip ssmtp
+
+forwarding_ip="" # IP of device, server or whatever, which NGROK will forward, leave blank for localhost
+forwarding_port="22" # Port to forward
+forwarding_connectiontype="tcp" # Forwarding type http or tcp (See more in ngrok documentation)
 email_addr="youremail@example.com" #Email address for sending Ngrok address in case server or device rebooted
 ssmtp_root="example@gmail.com" #Email address which be used to sent emails
 ssmtp_mailhub="smtp.gmail.com:587" #SMTP address of mail server
 ssmtp_authuser="example@gmail.com" #Authentication for SMTP server
-ssmtp_authpass="passwordforgmail" #Authentication for SMTP server
+ssmtp_authpass="apppasswordforgmail" #Authentication for SMTP server (must enable two factor auth: https://security.google.com/settings/security/apppasswords)
 ssmtp_usestarttls="YES" # Set YES or NO to enable or disable STARTTLS
 ssmtp_autoconfig=true #true or false to disable overwriting ssmtp.conf
 logging=false #Enables logging to same folder where is script
 ngrok_path="ngrok" # Custom path for Ngrok, leave ngrok if file is in same directory as script. BONUS! NgrokMailer will download file if it is missing
-checkfordependencies=true # Checking for all dependencies on startup
 
 if [ "$logging" = true ]; then
 rm -f ngrokmailer.log
 echo "Starting Ngrok Mailer" >> "ngrokmailer.log"
 fi
 
-if [ "$checkfordependencies" = true ]; then
-if [ "$logging" = true ]; then
-echo "Start Checking for dependencies" >> "ngrokmailer.log"
-fi
-apt-get install wget
-apt-get install unzip
-apt-get install ssmtp
-if [ "$logging" = true ]; then
-echo "Check complete! Continuing..." >> "ngrokmailer.log"
-fi
 fi
 if [ "$logging" = true ]; then
 echo "Checking for ngrok file" >> "ngrokmailer.log"
-fi
-if [ -f "$ngrok_path" ]
-then
-   if [ "$logging" = true ]; then
-    echo "Ngrok file found $ngrok_path" >> "ngrokmailer.log"
-   fi
-else
-	 if [ "$logging" = true ]; then
-     echo "Ngrok file not found $ngrok_path, so Downloading it." >> "ngrokmailer.log"
-     fi
-     wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-     unzip ngrok-stable-linux-amd64.zip
 fi
 if [ "$ssmtp_autoconfig" = true ]; then
     if [ "$logging" = true ]; then
@@ -72,12 +51,12 @@ fi
 
 if [ "$forwarding_ip" == "" ]
 then
-./ngrok $forwarding_connectiontype $forwarding_port &
+ngrok $forwarding_connectiontype $forwarding_port &
 if [ "$logging" = true ]; then
     echo "Ngrok Started for Localhost" >> "ngrokmailer.log"
 fi
 else
-./$ngrok_path $forwarding_connectiontype $forwarding_ip:$forwarding_port &
+$ngrok_path $forwarding_connectiontype $forwarding_ip:$forwarding_port &
  if [ "$logging" = true ]; then
     echo "Ngrok Started for Device with IP: $forwarding_ip" >> "ngrokmailer.log"
  fi
@@ -95,7 +74,6 @@ Subject: Ngrok Mailer got url!
 
 Hello! Here is your server's URL from Ngrok
 $ngrok_url
-Ngrok Mailer by Developer From Jokela
 EOF
 ssmtp $email_addr < msg.txt
 if [ "$logging" = true ]; then
